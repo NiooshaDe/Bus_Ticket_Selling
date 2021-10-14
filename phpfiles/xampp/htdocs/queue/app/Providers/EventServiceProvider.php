@@ -28,6 +28,10 @@ class EventServiceProvider extends ServiceProvider
         '\App\Events\GroupOne'=> [
             '\App\Listeners\GroupOneListener',
         ],
+
+        '\App\Events\SecondTest'=> [
+            '\App\Listeners\SecondTestListener',
+        ],
     ];
 
     /**

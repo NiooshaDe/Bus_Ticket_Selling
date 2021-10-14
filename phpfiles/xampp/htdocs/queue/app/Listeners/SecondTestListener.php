@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\GroupOne;
+use App\Events\SecondTest;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class GroupOneListener
+class SecondTestListener
 {
     /**
      * Create the event listener.
@@ -21,13 +21,11 @@ class GroupOneListener
     /**
      * Handle the event.
      *
-     * @param  GroupOne  $event
+     * @param  SecondTest  $event
      * @return void
      */
-    public function handle(GroupOne $event)
+    public function handle(SecondTest $event)
     {
-        echo "aghs";
-//        var_dump('The event and listener is done'. $event->user['name']);
+        var_dump('The event and listener is done');
     }
 }
-

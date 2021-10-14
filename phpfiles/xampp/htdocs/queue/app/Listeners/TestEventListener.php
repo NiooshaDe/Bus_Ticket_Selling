@@ -25,6 +25,7 @@ class TestEventListener
      */
     public function handle($event)
     {
-        //
+                var_dump('The event and listener is done'. $event->user['name']);
+
     }
 }

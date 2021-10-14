@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/event', function() {
+    $user = [
+        'name'=>'Mammad',
+        'password'=>'Mammad8',
+    ];
+
+    event(new \App\Events\SecondTest($user));
+});

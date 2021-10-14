@@ -10,18 +10,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class gitGroupOne
+class GroupOne
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $user;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user)
     {
-        //
+        $this->user = $user;
+//        var_dump($this->user);
     }
 
     /**
@@ -31,6 +33,7 @@ class gitGroupOne
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return [];
+//        return new PrivateChannel('channel-name');
     }
 }

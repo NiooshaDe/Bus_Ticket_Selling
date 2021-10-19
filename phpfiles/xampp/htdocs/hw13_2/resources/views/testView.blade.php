@@ -8,18 +8,19 @@
     <title>Document</title>
 </head>
 <body>
-php var js
+<table style="border: 1px solid black; width: 600px">
+<tr>
+    <th style="border: 1px solid black; width: 300px">file name</th>
+    <th style="border: 1px solid black; width: 300px">file path</th>
+</tr>
 
-@include('test')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+@foreach($results as $result)
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        console.log(window.file_path);
-        // $value = window.file_path;
-        // $('div.result select').val($value);
-    })
-</script>
-
+    <tr style="border: 1px solid black;">
+        <td style="border: 1px solid black; width: 300px">{{$result->name}}</td>
+        <td style="border: 1px solid black; width: 300px"><img src="{{URL::asset($result->file_path)}}" height="50px" width="50px"></td>
+    </tr>
+@endforeach
+</table>
 </body>
 </html>

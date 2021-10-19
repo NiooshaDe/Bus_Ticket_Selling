@@ -14,7 +14,7 @@ class AddFilePathColumnToPostsTable extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
-            $table->string('file_path')->after('name');
+            $table->string('file_path', 16000)->after('name');
         });
     }
 

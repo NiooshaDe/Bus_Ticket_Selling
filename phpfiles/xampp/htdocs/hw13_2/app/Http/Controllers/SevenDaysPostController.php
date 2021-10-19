@@ -18,9 +18,11 @@ class SevenDaysPostController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(7)
             ->get();
+//        dd($results);
 
         $label = [];
         $data = [];
+//        $wantedResult = [];
         foreach ($results as $result) {
             $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $result->getOriginal('created_at'));
             $result->created_at = Carbon::createFromDate($dateTime->year, $dateTime->month, $dateTime->day);
@@ -28,14 +30,18 @@ class SevenDaysPostController extends Controller
 
 //            var_dump($results);
 //            $label .= $result->created_at->format('Y-n-j');
+            array_push($label,  $result->created_at->format('Y-n-j'));
+            array_push($data,  $result->count);
 //            $data .= $result->count;
-            $data = [2, 2, 4];
-            $label = ['name', 'size', 'data'];
+//            $data = [2, 2, 4];
+//            $label = ['name', 'size', 'data'];
 //            $wantedResult = Arr::add($wantedResult, $result->created_at->format('Y-n-j'), $result->count);
 
         }
 
-        return view('dashboard')->with('label', json_encode($label))->with('data', json_encode($data));
-//        return ($wantedResult);
+
+        return view('chart')->with('label', json_encode($label))->with('data', json_encode($data));
+//        var_dump($label);
+//        var_dump($data);
     }
 }

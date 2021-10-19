@@ -33,7 +33,7 @@ class PageController extends Controller
      */
     public function tables()
     {
-        return Redirect::route('LastUser');
+        return view('dashboard');
     }
 
     /**

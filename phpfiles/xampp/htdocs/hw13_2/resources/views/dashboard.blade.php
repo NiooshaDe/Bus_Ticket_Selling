@@ -43,53 +43,53 @@
                 <div class="card-body">
                     <div class="chart-area">
                         <canvas id="chartBig1"></canvas>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-                        <script>
-                            {{--var label = <?php foreach($results as $result){echo $result[0];} ?>;--}}
-                            var label = {{$label}};
-                            {{--var data = <?php echo $postNo; ?>;--}}
-                            var data = {{$data}};
-                            var barChartData = {
-                                labels: label,
-                                datasets: [{
-                                    label: 'Number of posts each day',
-                                    backgroundColor: '#f6c23e',
-                                    data: data
-                                }]
-                            };
+{{--                        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>--}}
+{{--                        <script>--}}
+{{--                            --}}{{--var label = <?php foreach($results as $result){echo $result[0];} ?>;--}}
+{{--                            var label = {{$label}};--}}
+{{--                            --}}{{--var data = <?php echo $postNo; ?>;--}}
+{{--                            var data = {{$data}};--}}
+{{--                            var barChartData = {--}}
+{{--                                labels: label,--}}
+{{--                                datasets: [{--}}
+{{--                                    label: 'Number of posts each day',--}}
+{{--                                    backgroundColor: '#f6c23e',--}}
+{{--                                    data: data--}}
+{{--                                }]--}}
+{{--                            };--}}
 
-                            window.onload = function() {
-                                var ctx = document.getElementById("canvas").getContext("2d");
-                                window.myBar = new Chart(ctx, {
-                                    type: 'bar',
-                                    data: barChartData,
-                                    options: {
-                                        elements: {
-                                            rectangle: {
-                                                borderWidth: 2,
-                                                borderColor: '#c1c1c1',
-                                                borderSkipped: 'bottom'
-                                            }
-                                        },
-                                        responsive: true,
-                                        title: {
-                                            display: true,
-                                            text: 'Weekly posted'
-                                        },
-                                        scales: {
-                                            yAxes: [{
-                                                display: true,
-                                                ticks: {
-                                                    beginAtZero: true,
-                                                    steps: 1,
-                                                    stepValue: 5,
-                                                    max: 10
-                                                }
-                                            }]
-                                        },
-                                    }
-                                });
-                            };</script>
+{{--                            window.onload = function() {--}}
+{{--                                var ctx = document.getElementById("canvas").getContext("2d");--}}
+{{--                                window.myBar = new Chart(ctx, {--}}
+{{--                                    type: 'bar',--}}
+{{--                                    data: barChartData,--}}
+{{--                                    options: {--}}
+{{--                                        elements: {--}}
+{{--                                            rectangle: {--}}
+{{--                                                borderWidth: 2,--}}
+{{--                                                borderColor: '#c1c1c1',--}}
+{{--                                                borderSkipped: 'bottom'--}}
+{{--                                            }--}}
+{{--                                        },--}}
+{{--                                        responsive: true,--}}
+{{--                                        title: {--}}
+{{--                                            display: true,--}}
+{{--                                            text: 'Weekly posted'--}}
+{{--                                        },--}}
+{{--                                        scales: {--}}
+{{--                                            yAxes: [{--}}
+{{--                                                display: true,--}}
+{{--                                                ticks: {--}}
+{{--                                                    beginAtZero: true,--}}
+{{--                                                    steps: 1,--}}
+{{--                                                    stepValue: 5,--}}
+{{--                                                    max: 10--}}
+{{--                                                }--}}
+{{--                                            }]--}}
+{{--                                        },--}}
+{{--                                    }--}}
+{{--                                });--}}
+{{--                            };</script>--}}
                             </div>
                 </div>
             </div>

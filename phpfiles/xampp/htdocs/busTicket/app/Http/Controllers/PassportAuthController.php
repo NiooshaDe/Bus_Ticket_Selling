@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CompanyRequest;
-use App\Http\Requests\UserRequest;
 use App\Models\Users;
+use Laravel\Passport\Client;
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use Illuminate\Http\ResponseTrait;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CompanyRequest;
+
 
 class PassportAuthController extends Controller
 {
+
     public function register(UserRequest $request)
     {
         $data = [
@@ -24,7 +29,7 @@ class PassportAuthController extends Controller
 
         $user = Users::create($data); //insert into database
 
-        $access_token_example = $user->createToken('PassportExample@Section.io')->accessToken;
+        $access_token_example = $user->createToken("$request->name")->accessToken;
         return response()->json(['token' => $access_token_example], 200);
     }
 
@@ -42,7 +47,7 @@ class PassportAuthController extends Controller
 
         $user = Users::create($data); //insert into database
 
-        $access_token_example = $user->createToken('PassportExample@Section.io')->accessToken;
+        $access_token_example = $user->createToken("$request->name")->accessToken;
         return response()->json(['token' => $access_token_example], 200);
     }
 
@@ -53,9 +58,9 @@ class PassportAuthController extends Controller
 
         //user authenticated successfully
         if (Auth::attempt($request_array)) {
-            $user_login_token = auth()->user()->createToken('PassportExample@Section.io')->accessToken;
+            $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
 
-            return response()->json(['token' => $user_login_token], 200);
+            return response()->json(['token' => $user_login_token, 'name' => $request->name], 200);
         } //authentication has failed
         else {
 
@@ -69,14 +74,16 @@ class PassportAuthController extends Controller
 
             //user authenticated successfully
             if (Auth::attempt($request_array)) {
-                $user_login_token = auth()->user()->createToken('PassportExample@Section.io')->accessToken;
+                $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
 
-                return response()->json(['token' => $user_login_token], 200);
+                return response()->json(['token' => $user_login_token, 'name' => $request->name], 200);
             } //authentication has failed
             else {
 
                 return response()->json(['error' => 'UnAuthorised Access'], 401);
             }
+
+
 
         }
 

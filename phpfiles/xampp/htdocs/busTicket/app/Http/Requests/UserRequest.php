@@ -30,7 +30,7 @@ class UserRequest extends FormRequest
     {
 
             return [
-               'name' => 'required|min:3',
+               'name' => 'required|min:3|unique:users',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|min:6|required_with:password_confirmation|same:password_confirmation',
                 'password_confirmation' => 'required|min:6',

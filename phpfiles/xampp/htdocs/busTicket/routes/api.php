@@ -23,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register',[PassportAuthController::class,'register']);
 Route::post('/login',[PassportAuthController::class,'login']);
 
+Route::post('/companyRegister',[PassportAuthController::class,'companyRegister']);
+Route::post('/companyLogin',[PassportAuthController::class,'companyLogin']);

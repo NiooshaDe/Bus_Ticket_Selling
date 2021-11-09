@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Users;
+use Illuminate\Support\Str;
 use Laravel\Passport\Client;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -15,27 +17,35 @@ use App\Http\Requests\CompanyRequest;
 
 class PassportAuthController extends Controller
 {
+    public $registerData;
 
     public function register(UserRequest $request)
     {
-        $data = [
+//        $api_token = Str::random(60);
+
+        $this->registerData = [
             "name" => $request->name,
             "phone_number" => $request->phone_number,
             "email" => $request->email,
             "password" => Hash::make($request->password),
+            "role_id" => 3,
+//            "api_token" => \hash("sha256", $api_token)
         ];
 
         $request->validated(); //applying validations which have been made in request
 
-        $user = Users::create($data); //insert into database
+        $user = Users::create($this->registerData); //insert into database
 
         $access_token_example = $user->createToken("$request->name")->accessToken;
         return response()->json(['token' => $access_token_example], 200);
+
+//        $token = \auth('api')->login($user);
+//        return $token;
     }
 
     public function companyRegister(CompanyRequest $request)
     {
-        $data = [
+        $companyData = [
             "name" => $request->name,
             "phone_number" => $request->phone_number,
             "email" => $request->email,
@@ -43,11 +53,18 @@ class PassportAuthController extends Controller
             "owner_name" => $request->owner_name
         ];
 
+        $userData = [
+            "name" => $request->name,
+            "phone_number" => $request->phone_number,
+            "email" => $request->email,
+            "password" => Hash::make($request->password),
+        ];
+
         $request->validated(); //applying validations which have been made in request
 
-        $user = Users::create($data); //insert into database
-
-        $access_token_example = $user->createToken("$request->name")->accessToken;
+        $company = Company::create($companyData); //insert into database
+        $user = Users::create($userData);//insert into users table
+        $access_token_example = auth()->user()->createToken("$request->name")->accessToken;
         return response()->json(['token' => $access_token_example], 200);
     }
 
@@ -56,7 +73,7 @@ class PassportAuthController extends Controller
     {
         $request_array = $request->only('name', 'password');
 
-        //user authenticated successfully
+//        user authenticated successfully
         if (Auth::attempt($request_array)) {
             $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
 
@@ -67,31 +84,5 @@ class PassportAuthController extends Controller
             return response()->json(['error' => 'UnAuthorised Access'], 401);
         }
     }
-
-        public function companyLogin(Request $request)
-        {
-            $request_array = $request->only('name','phone_number', 'password');
-
-            //user authenticated successfully
-            if (Auth::attempt($request_array)) {
-                $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
-
-                return response()->json(['token' => $user_login_token, 'name' => $request->name], 200);
-            } //authentication has failed
-            else {
-
-                return response()->json(['error' => 'UnAuthorised Access'], 401);
-            }
-
-
-
-        }
-
-        //returns details of user
-//    public function authenticatedUserDetails(){
-//
-//        return response()->json(['authenticated-user' => auth()->user()], 200);
-//    }
-
 
     }

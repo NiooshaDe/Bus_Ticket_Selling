@@ -16,7 +16,7 @@ use App\Http\Controllers\PassportAuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:passport')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -24,4 +24,4 @@ Route::post('/register',[PassportAuthController::class,'register']);
 Route::post('/login',[PassportAuthController::class,'login']);
 
 Route::post('/companyRegister',[PassportAuthController::class,'companyRegister']);
-Route::post('/companyLogin',[PassportAuthController::class,'companyLogin']);
+//Route::post('/companyLogin',[PassportAuthController::class,'companyLogin']);

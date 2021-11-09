@@ -15,4 +15,10 @@ class Users extends Model
     {
         return $this->belongsTo(Roles::class);
     }
+
+    public function tickets()
+    {
+        return $this->belongsToMany
+        (Ticket::class, 'ticket_user', 'user_id', 'ticket_id');
+    }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateBusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,13 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::enableForeignKeyConstraints();
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('buses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone_number');
-            $table->string('password', 8000);
-            $table->string('email');
-            $table->unsignedBigInteger('role_id')->index()->nullable();
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->unsignedBigInteger('company_id')->index()->nullable();
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->timestamps();
+
         });
     }
 
@@ -33,6 +30,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('buses');
     }
 }

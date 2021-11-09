@@ -3,9 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Models\Users;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class UserRequest extends FormRequest
 {
@@ -30,12 +33,19 @@ class UserRequest extends FormRequest
     {
 
             return [
-               'name' => 'required|min:3|unique:users',
+               'name' => 'required|min:3',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|min:6|required_with:password_confirmation|same:password_confirmation',
                 'password_confirmation' => 'required|min:6',
                 'phone_number' => 'required|regex:[^09[0-9]{9}]|unique:users',
             ];
 
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json(["message" => "invalid data sent", "details" => $errors->messages()], 422);
+        throw new HttpResponseException($response);
     }
 }

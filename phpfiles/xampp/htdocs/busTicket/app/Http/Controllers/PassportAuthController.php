@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Users;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
 use Laravel\Passport\Client;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -21,18 +22,15 @@ class PassportAuthController extends Controller
 
     public function register(UserRequest $request)
     {
-//        $api_token = Str::random(60);
-
         $this->registerData = [
             "name" => $request->name,
             "phone_number" => $request->phone_number,
             "email" => $request->email,
             "password" => Hash::make($request->password),
             "role_id" => 3,
-//            "api_token" => \hash("sha256", $api_token)
         ];
 
-//        $request->validated(); //applying validations which have been made in request
+       $request->validated(); //applying validations which have been made in request
 
         $user = Users::create($this->registerData); //insert into database
         $access_token_example = $user->createToken("$request->name")->accessToken;

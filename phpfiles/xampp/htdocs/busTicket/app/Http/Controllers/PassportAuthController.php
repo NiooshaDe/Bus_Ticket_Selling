@@ -32,16 +32,11 @@ class PassportAuthController extends Controller
 //            "api_token" => \hash("sha256", $api_token)
         ];
 
-        $request->validated(); //applying validations which have been made in request
+//        $request->validated(); //applying validations which have been made in request
 
         $user = Users::create($this->registerData); //insert into database
-
         $access_token_example = $user->createToken("$request->name")->accessToken;
-        dd($access_token_example);
-//        return response()->json(['token' => $access_token_example], 200);
-
-//        $token = \auth('api')->login($user);
-//        return $token;
+        return response()->json(['token' => $access_token_example], 200);
     }
 
     public function companyRegister(CompanyRequest $request)
@@ -65,7 +60,7 @@ class PassportAuthController extends Controller
 
         $company = Company::create($companyData); //insert into database
         $user = Users::create($userData);//insert into users table
-        $access_token_example = auth()->user()->createToken("$request->name")->accessToken;
+        $access_token_example = $user->createToken("$request->name")->accessToken;
         return response()->json(['token' => $access_token_example], 200);
     }
 
@@ -78,7 +73,7 @@ class PassportAuthController extends Controller
         if (Auth::attempt($request_array)) {
             $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
 
-            return response()->json(['token' => $user_login_token, 'name' => $request->name], 200);
+            return response()->json(['token' => $user_login_token->token, 'name' => $request->name], 200);
         } //authentication has failed
         else {
 

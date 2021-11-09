@@ -53,5 +53,9 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Exception $e) {
             return \response()->json(['message' => 'Something went wrong!', 'status' => Response::HTTP_INTERNAL_SERVER_ERROR]);
         });
+
+        $this->renderable(function (Exception $e) {
+            dd($e->getMessage());
+        });
     }
 }

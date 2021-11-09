@@ -37,7 +37,8 @@ class PassportAuthController extends Controller
         $user = Users::create($this->registerData); //insert into database
 
         $access_token_example = $user->createToken("$request->name")->accessToken;
-        return response()->json(['token' => $access_token_example], 200);
+        dd($access_token_example);
+//        return response()->json(['token' => $access_token_example], 200);
 
 //        $token = \auth('api')->login($user);
 //        return $token;

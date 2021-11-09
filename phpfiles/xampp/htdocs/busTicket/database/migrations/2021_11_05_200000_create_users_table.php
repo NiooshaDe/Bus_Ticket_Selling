@@ -16,10 +16,10 @@ class CreateUsersTable extends Migration
         Schema::enableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('phone_number');
+            $table->string('name')->unique();
+            $table->string('phone_number')->unique();
             $table->string('password', 8000);
-            $table->string('email');
+            $table->string('email')->unique();
             $table->unsignedBigInteger('role_id')->index()->nullable();
             $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();

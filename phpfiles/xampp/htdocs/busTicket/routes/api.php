@@ -24,16 +24,22 @@ Route::post('/register',[PassportAuthController::class,'register']);
 Route::post('/login',[PassportAuthController::class,'login'])->name('login');
 Route::post('/companyRegister',[PassportAuthController::class,'companyRegister']);
 
-//Route::group(['prefix' => 'bus', 'namespace' => 'company', 'middleware' => ['permission:company']], function () {
-//    Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
-//    Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
-//    Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
-//});
-
-Route::middleware('auth:api')->group(function() {
-    Route::group(['prefix' => 'bus', 'middleware' => 'permission:company'], function () {
-        Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
-        Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
-        Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
-    });
+Route::group(['prefix' => 'bus', 'namespace' => 'company', 'middleware' => ['permission:company']], function () {
+    Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
+    Route::put('/update', [\App\Http\Controllers\BusController::class, 'update']);
+    Route::put('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
+    Route::get('/show', [\App\Http\Controllers\BusController::class, 'companyShow']);
 });
+
+//Route::middleware('auth:api')->group(function() {
+//    Route::group(['prefix' => 'bus', 'middleware' => 'permission:company'], function () {
+//        Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
+//        Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
+//        Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
+//    });
+//});
+//
+//Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
+//Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
+//Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
+//Route::post('/show', [\App\Http\Controllers\BusController::class, 'companyShow']);

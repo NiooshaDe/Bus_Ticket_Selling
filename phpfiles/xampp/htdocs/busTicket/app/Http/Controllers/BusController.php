@@ -1,8 +1,5 @@
 <?php
 
-/**     update function ---> handle repeated data
- *      userShow and companyShow returning format
- */
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
@@ -58,18 +55,36 @@ class BusController extends Controller
     }
 
 
-    //show available and non available buses for companies
+    //show available and non available buses for specific company
     public function companyShow(Request $request)
     {
-        $buses = Bus::where('company_id', $request->id);
+        $output_buses = [];
+        $buses = Bus::where('company_id', $request->company_id)->where('available', 1)->get();
+        foreach ($buses as $bus) {
+            $data = [
+                "id" =>$bus->id,
+                "name" => $bus->name,
+                "sites" => $bus->sites,
+                "grade" => $bus->grade,
+                "air_conditioning" => $bus->air_conditioning,
+                "available" => 1, //every input bus is available from the beginning
+                "file_path" => $bus->file_path, //image path storing in database using hash
+                "company_id" => $bus->company_id,
+                ];
+
+            $output_buses += $data;
+
+        }
+
+        return response()->json(['data' => $data], Response::HTTP_OK);
     }
 
 
-    public function update(UpdateRequest $request)
+    public function update(Request $request)
     {
         $message = '';
         if($request->filled('name')) {
-            Bus::where('id', $request->id)->update(['name' => $request->name]);
+            Bus::where('id', $request['id'])->update(['name' => $request->name]);
             $message .= "Name of current bus has been updated. ";
         }
 

@@ -17,7 +17,7 @@ class AddSomeInformationColumnsToBusesTable extends Migration
             $table->integer('sites')->after('name');
             $table->integer('grade')->after('sites');
             $table->boolean('air_conditioning')->after('grade');
-            $table->boolean('available')->default(0)->after('air_conditioning');
+            $table->boolean('available')->default(1)->after('air_conditioning');
         });
     }
 

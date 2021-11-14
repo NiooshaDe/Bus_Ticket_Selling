@@ -1,7 +1,5 @@
 <?php
-/**
- *      how to add multiple records
- */
+
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
@@ -9,6 +7,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdateRequest;
 use App\Http\Requests\TicketRequest;
+use Illuminate\Http\Response;
 
 class TicketController extends Controller
 {
@@ -21,6 +20,7 @@ class TicketController extends Controller
             "destination" => $request->destination,
             "price" => $request->price,
             "bus_id" => $request->bus_id,
+            "available" => 1, //is available from the beginning
         ];
 
         $request->validated(); //applying validation requests
@@ -29,9 +29,27 @@ class TicketController extends Controller
         return response()->json(['message' => 'Done successfully!'], 200);
     }
 
+    //show available tickets of specific bus
     public function show(Request $request)
     {
-        //
+        $output_tickets = [];
+        $tickets = Ticket::where('bus_id', $request->bus_id)->where('available', 1)->get();
+        foreach ($tickets as $ticket) {
+            $data = [
+                "id" =>$ticket->id,
+                "number" => $ticket->number,
+                "starting_date_time" => $ticket->starting_date_time,
+                "beginning" => $ticket->beginning,
+                "destination" => $ticket->destination,
+                "price" => $ticket->price,
+                "bus_id" => $ticket->bus_id,
+                ];
+
+            $output_tickets += $data;
+
+        }
+
+        return response()->json(['data' => $data], Response::HTTP_OK);
     }
 
     //check if fields are filled and update them
@@ -68,6 +86,6 @@ class TicketController extends Controller
             $message .= "There is nothing to update";
         }
 
-        return response()->json(['message' => $message], 200);
+        return response()->json(['message' => $message], Response::HTTP_OK);
     }
 }

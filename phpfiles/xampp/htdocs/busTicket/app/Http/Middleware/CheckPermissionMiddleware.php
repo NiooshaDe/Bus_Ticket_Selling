@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CheckPermissionMiddleware
 {
@@ -17,7 +18,7 @@ class CheckPermissionMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = auth('api')->user();
+        $user = Auth::user();
 //        $userRoles = $user->roles()->pluck('role')->toArray();
         dd($user);
 //        $userRoles = $user;

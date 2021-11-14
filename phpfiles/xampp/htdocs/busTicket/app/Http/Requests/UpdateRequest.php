@@ -30,7 +30,7 @@ class UpdateRequest extends FormRequest
             "id" => 'required',
 
             //if you wanna update a bus
-            "name" => 'min:3|unique:buses',
+            "name" => "min:3|unique:buses,name,{$this->bus->id}",
             "grade" => 'regex:/[1-3]/',
             "air_conditioning" => 'boolean',
             "file" => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', //if the image is inserted format checking

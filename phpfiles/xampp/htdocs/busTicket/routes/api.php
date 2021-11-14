@@ -21,7 +21,19 @@ Route::middleware('auth:passport')->get('/user', function (Request $request) {
 });
 
 Route::post('/register',[PassportAuthController::class,'register']);
-Route::post('/login',[PassportAuthController::class,'login']);
-
+Route::post('/login',[PassportAuthController::class,'login'])->name('login');
 Route::post('/companyRegister',[PassportAuthController::class,'companyRegister']);
-//Route::post('/companyLogin',[PassportAuthController::class,'companyLogin']);
+
+//Route::group(['prefix' => 'bus', 'namespace' => 'company', 'middleware' => ['permission:company']], function () {
+//    Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
+//    Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
+//    Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
+//});
+
+Route::middleware('auth:api')->group(function() {
+    Route::group(['prefix' => 'bus', 'middleware' => 'permission:company'], function () {
+        Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
+        Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
+        Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
+    });
+});

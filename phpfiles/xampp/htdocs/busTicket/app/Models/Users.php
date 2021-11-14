@@ -9,7 +9,7 @@ use Laravel\Passport\HasApiTokens;
 class Users extends Model
 {
     use HasApiTokens, HasFactory;
-    protected $fillable = ['name', 'phone_number', 'email', 'password'];
+    protected $fillable = ['name', 'phone_number', 'email', 'password', 'role_id', 'gender'];
 
     public function role()
     {

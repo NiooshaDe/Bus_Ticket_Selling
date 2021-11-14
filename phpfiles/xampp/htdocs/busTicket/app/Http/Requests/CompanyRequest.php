@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CompanyRequest extends FormRequest
 {
@@ -31,5 +33,12 @@ class CompanyRequest extends FormRequest
             'phone_number' => 'required|regex:[^09[0-9]{9}]',
             'owner_name' => 'required|min:3',
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json(["message" => "invalid data sent", "details" => $errors->messages()], 422);
+        throw new HttpResponseException($response);
     }
 }

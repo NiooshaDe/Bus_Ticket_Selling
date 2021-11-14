@@ -21,6 +21,7 @@ class CreateTicketUserPivotTable extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->foreign('user_id')->references('id')->on('users');
             $table->primary(['ticket_id', 'user_id']);
+            $table->timestamps();
         });
     }
 

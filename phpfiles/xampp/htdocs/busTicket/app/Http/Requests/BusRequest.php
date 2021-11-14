@@ -2,15 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Users;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
-class UserRequest extends FormRequest
+class BusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,10 +16,8 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-//        return auth()->check();
         return true;
     }
-
 
     /**
      * Get the validation rules that apply to the request.
@@ -31,17 +26,17 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-
-            return [
-               'name' => 'required|min:3',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|min:6|required_with:password_confirmation|same:password_confirmation',
-                'password_confirmation' => 'required|min:6',
-                'phone_number' => 'required|regex:[^09[0-9]{9}]|unique:users',
-            ];
-
+        return [
+            "name" => 'required|min:3|unique:buses',
+            "sites" => 'required',
+            "grade" => 'required|regex:/[1-3]/',
+            "air_conditioning" => 'required|boolean',
+            "file" => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', //if the image is inserted format checking
+            "company_id" => 'required',
+        ];
     }
 
+    //customizing validation error, preventing from redirecting
     public function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

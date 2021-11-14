@@ -16,6 +16,7 @@ class CreateBusesTable extends Migration
         Schema::create('buses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('file_path', 8000)->nullable();
             $table->unsignedBigInteger('company_id')->index()->nullable();
             $table->foreign('company_id')->references('id')->on('companies');
             $table->timestamps();

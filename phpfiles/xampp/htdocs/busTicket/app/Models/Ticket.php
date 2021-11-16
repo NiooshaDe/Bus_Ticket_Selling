@@ -12,6 +12,6 @@ class Ticket extends Model
     public function users()
     {
         return $this->belongsToMany
-        (Users::class, 'ticket_user', 'ticket_id', 'user_id');
+        (User::class, 'ticket_user', 'ticket_id', 'user_id');
     }
 }

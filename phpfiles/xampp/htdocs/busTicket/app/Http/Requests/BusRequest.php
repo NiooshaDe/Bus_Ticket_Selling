@@ -32,7 +32,7 @@ class BusRequest extends FormRequest
             "grade" => 'required|regex:/[1-3]/',
             "air_conditioning" => 'required|boolean',
             "file" => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', //if the image is inserted format checking
-            "company_id" => 'required',
+//            "company_id" => 'required',
         ];
     }
 

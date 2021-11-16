@@ -18,9 +18,9 @@ class CheckPermissionMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        $user = Auth::user();
-//        $userRoles = $user->roles()->pluck('role')->toArray();
-        dd($user);
+        $user = auth('api')->user();
+        $userRoles = $user->role()->pluck('role')->toArray();
+//        dd($userRoles);
 //        $userRoles = $user;
         foreach ($roles as $role) {
             if (!in_array($role, $userRoles)) {

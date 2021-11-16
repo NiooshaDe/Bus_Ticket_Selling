@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
+use App\Models\Company;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use App\Http\Requests\BusRequest;
 use App\Http\Requests\UpdateRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Response;
+use phpDocumentor\Reflection\Types\Self_;
 
 //storing new buses
 // archiving them
@@ -20,6 +22,14 @@ class BusController extends Controller
 {
     use  HasFactory;
 
+    public $company_id;
+
+    public function __construct()
+    {
+        //get the company id using token
+        $user_name = auth('api')->user()->name;
+        $this->company_id = Company::where('name', $user_name)->first()->id;
+    }
     public function store(BusRequest $request)
     {
         if (!empty($request->file())) {
@@ -38,7 +48,7 @@ class BusController extends Controller
             "air_conditioning" => $request->air_conditioning,
             "available" => 1, //every input bus is available from the beginning
             "file_path" => $file_path, //image path storing in database using hash
-            "company_id" => $request->company_id,
+            "company_id" => $this->company_id
         ];
 
         $request->validated(); //applying validation requests
@@ -56,27 +66,11 @@ class BusController extends Controller
 
 
     //show available and non available buses for specific company
-    public function companyShow(Request $request)
+    public function companyShow()
     {
-        $output_buses = [];
-        $buses = Bus::where('company_id', $request->company_id)->where('available', 1)->get();
-        foreach ($buses as $bus) {
-            $data = [
-                "id" =>$bus->id,
-                "name" => $bus->name,
-                "sites" => $bus->sites,
-                "grade" => $bus->grade,
-                "air_conditioning" => $bus->air_conditioning,
-                "available" => 1, //every input bus is available from the beginning
-                "file_path" => $bus->file_path, //image path storing in database using hash
-                "company_id" => $bus->company_id,
-                ];
+        $buses = Bus::where('company_id', $this->company_id)->where('available', 1)->get();
 
-            $output_buses += $data;
-
-        }
-
-        return response()->json(['data' => $data], Response::HTTP_OK);
+        return response()->json(['data' => $buses], Response::HTTP_OK);
     }
 
 

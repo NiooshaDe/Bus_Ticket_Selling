@@ -31,14 +31,17 @@ Route::group(['prefix' => 'bus', 'namespace' => 'company', 'middleware' => ['per
     Route::get('/show', [\App\Http\Controllers\BusController::class, 'companyShow']);
 });
 
-//Route::middleware('auth:api')->group(function() {
-//    Route::group(['prefix' => 'bus', 'middleware' => 'permission:company'], function () {
-//        Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
-//        Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
-//        Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
-//    });
-//});
-//
+Route::group(['prefix' => 'ticket', 'namespace' => 'company', 'middleware' => ['permission:company']], function () {
+    Route::post('/store', [\App\Http\Controllers\TicketController::class, 'store']);
+    Route::put('/update', [\App\Http\Controllers\TicketController::class, 'update']);
+    Route::get('/show', [\App\Http\Controllers\TicketController::class, 'show']);
+});
+
+Route::middleware(['auth:api', 'permission:company'])->get('/test', function (Request $request) {
+    $user = auth('api')->user();//Auth::user();
+    dd($user->id);
+});
+
 //Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
 //Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
 //Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);

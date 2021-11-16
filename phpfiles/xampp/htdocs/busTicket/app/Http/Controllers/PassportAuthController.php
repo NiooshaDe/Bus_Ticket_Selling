@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
+use App\Models\User;
 use App\Models\Company;
 use Illuminate\Http\Response;
 use Laravel\Passport\Client;
@@ -33,7 +33,7 @@ class PassportAuthController extends Controller
 
        $request->validated(); //applying validations which have been made in request
 
-        $user = Users::create($this->registerData); //insert into database
+        $user = User::create($this->registerData); //insert into database
         $register_access_token = $user->createToken("$request->name")->accessToken;
         return response()->json(['token' => $register_access_token], 200);
     }
@@ -63,7 +63,7 @@ class PassportAuthController extends Controller
         $request->validated(); //applying validations which have been made in request
 
         $company = Company::create($companyData); //insert into companies table
-        $user = Users::create($userData);//insert into users table
+        $user = User::create($userData);//insert into users table
         $register_access_token = $user->createToken("$request->name")->accessToken;
         return response()->json(['token' => $register_access_token], Response::HTTP_OK);
     }
@@ -77,7 +77,8 @@ class PassportAuthController extends Controller
         if (Auth::attempt($request_array)) {
             $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
 
-            return response()->json(['token' => $user_login_token->token, 'name' => $request->name], Response::HTTP_OK);
+//            dd($user_login_token);
+            return response()->json(['token' => $user_login_token, 'name' => $request->name], Response::HTTP_OK);
         } //authentication has failed
         else {
 

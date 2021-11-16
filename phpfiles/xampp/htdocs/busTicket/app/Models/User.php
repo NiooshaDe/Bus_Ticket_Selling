@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -18,9 +18,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'phone_number', 'email', 'password', 'role_id', 'gender'
     ];
 
     /**
@@ -41,4 +39,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Roles::class);
+    }
+
+    public function tickets()
+    {
+        return $this->belongsToMany
+        (Ticket::class, 'ticket_user', 'user_id', 'ticket_id');
+    }
 }

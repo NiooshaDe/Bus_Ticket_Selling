@@ -3,15 +3,17 @@
 namespace App\Http\Requests;
 
 use App\Models\Users;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
+use App\Http\Traits\ProjectResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UserRequest extends FormRequest
 {
+    use ProjectResponse;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -45,7 +47,7 @@ class UserRequest extends FormRequest
     public function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
-        $response = response()->json(["message" => "invalid data sent", "details" => $errors->messages()], Response::HTTP_FORBIDDEN);
+        $response = $this->getErrors($errors->messages(), Response::HTTP_FORBIDDEN);
         throw new HttpResponseException($response);
     }
 }

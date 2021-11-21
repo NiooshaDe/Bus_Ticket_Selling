@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Response;
+use App\Http\Traits\ProjectResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CompanyRequest extends FormRequest
 {
+    use ProjectResponse;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -38,7 +41,7 @@ class CompanyRequest extends FormRequest
     public function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
-        $response = response()->json(["message" => "invalid data sent", "details" => $errors->messages()], 422);
+        $response = $this->getErrors($errors->messages(), Response::HTTP_FORBIDDEN);
         throw new HttpResponseException($response);
     }
 }

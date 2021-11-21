@@ -6,11 +6,13 @@ use App\Models\Bus;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Traits\ProjectResponse;
 use App\Http\Requests\UpdateRequest;
 use App\Http\Requests\TicketRequest;
 
 class TicketController extends Controller
 {
+    use ProjectResponse;
     public function store(TicketRequest $request)
     {
         $data = [
@@ -23,10 +25,8 @@ class TicketController extends Controller
             "available" => 1, //is available from the beginning
         ];
 
-        $request->validated(); //applying validation requests
-
         $ticket = Ticket::create($data);
-        return response()->json(['message' => 'Done successfully!'], 200);
+        return $this->showMessage('Done successfully!');
     }
 
     //show available tickets of specific bus
@@ -34,7 +34,7 @@ class TicketController extends Controller
     {
         $tickets = Ticket::where('bus_id', $request->bus_id)->where('available', 1)->get();
 
-        return response()->json(['data' => $tickets], Response::HTTP_OK);
+        return $this->showData($tickets);
     }
 
     //check if fields are filled and update them
@@ -71,6 +71,6 @@ class TicketController extends Controller
             $message .= "There is nothing to update";
         }
 
-        return response()->json(['message' => $message], Response::HTTP_OK);
+        return $this->showMessage($message);
     }
 }

@@ -4,18 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Company;
-use Illuminate\Http\Response;
 use Laravel\Passport\Client;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Requests\UserRequest;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Traits\ProjectResponse;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CompanyRequest;
 
 
 class PassportAuthController extends Controller
 {
+    use ProjectResponse;
     public $registerData;
 
     public function register(UserRequest $request)
@@ -31,11 +32,9 @@ class PassportAuthController extends Controller
             'updated_at' => \Carbon\Carbon::now(),
         ];
 
-       $request->validated(); //applying validations which have been made in request
-
         $user = User::create($this->registerData); //insert into database
         $register_access_token = $user->createToken("$request->name")->accessToken;
-        return response()->json(['token' => $register_access_token], 200);
+        return $this->showToken($register_access_token);
     }
 
     public function companyRegister(CompanyRequest $request)
@@ -60,12 +59,11 @@ class PassportAuthController extends Controller
             'updated_at' => \Carbon\Carbon::now(),
         ];
 
-        $request->validated(); //applying validations which have been made in request
 
         $company = Company::create($companyData); //insert into companies table
         $user = User::create($userData);//insert into users table
         $register_access_token = $user->createToken("$request->name")->accessToken;
-        return response()->json(['token' => $register_access_token], Response::HTTP_OK);
+        return $this->showToken($register_access_token);
     }
 
 
@@ -73,16 +71,17 @@ class PassportAuthController extends Controller
     {
         $request_array = $request->only('name', 'password');
 
-//        user authenticated successfully
+       //user authenticated successfully
         if (Auth::attempt($request_array)) {
             $user_login_token = auth()->user()->createToken("$request->name")->accessToken;
 
-//            dd($user_login_token);
-            return response()->json(['token' => $user_login_token, 'name' => $request->name], Response::HTTP_OK);
-        } //authentication has failed
+            return $this->showToken($user_login_token);
+        }
+
+        //authentication has failed
         else {
 
-            return response()->json(['error' => 'UnAuthorised Access'], Response::HTTP_FORBIDDEN);
+            return $this->getErrors('UnAuthorised Access', Response::HTTP_FORBIDDEN);
         }
     }
 

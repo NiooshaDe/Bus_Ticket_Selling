@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bus;
-use App\Models\Company;
 use App\Models\Ticket;
+use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Requests\BusRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Http\Traits\ProjectResponse;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Http\Response;
-use phpDocumentor\Reflection\Types\Self_;
+
 
 //storing new buses
 // archiving them
@@ -20,7 +21,7 @@ use phpDocumentor\Reflection\Types\Self_;
 
 class BusController extends Controller
 {
-    use  HasFactory;
+    use  HasFactory, ProjectResponse;
 
     public $company_id;
 
@@ -31,15 +32,15 @@ class BusController extends Controller
         $this->company_id = Company::where('name', $user_name)->first()->id;
     }
     public function store(BusRequest $request)
+
     {
+        $file_path = 'Null';
+
         if (!empty($request->file())) {
             $file_path = $request->file->hashName();
             $request->file->store('busImage', 'public'); //save the file locally in storage/public under a new folder named /busImage
         }
 
-        else{
-            $file_path = 'Null';
-        }
 
         $data = [
             "name" => $request->name,
@@ -51,10 +52,8 @@ class BusController extends Controller
             "company_id" => $this->company_id
         ];
 
-        $request->validated(); //applying validation requests
-
         $bus = Bus::create($data);
-        return response()->json(['message' => 'Done successfully!'], Response::HTTP_OK);
+        return $this->showMessage('Done successfully!');
     }
 
 
@@ -69,11 +68,11 @@ class BusController extends Controller
     public function companyShow()
     {
         $buses = Bus::where('company_id', $this->company_id)->where('available', 1)->get();
-
-        return response()->json(['data' => $buses], Response::HTTP_OK);
+        return $this->showData($buses);
     }
 
 
+    //array intersect
     public function update(Request $request)
     {
         $message = '';
@@ -108,7 +107,7 @@ class BusController extends Controller
             $message .= "There is nothing to update";
         }
 
-        return response()->json(['message' => $message], Response::HTTP_OK);
+        return $this->showMessage($message);
     }
 
 
@@ -128,6 +127,15 @@ class BusController extends Controller
             $ticket_message = "Current bus doesn't have any tickets";
         }
 
-        return response()->json(['bus_message' => 'Chosen bus has been archived successfully', 'ticket_message' => $ticket_message], Response::HTTP_OK);
+        $bus_message = 'Chosen bus has been archived successfully';
+        $total_message = $bus_message . $ticket_message;
+        return $this->showMessage($total_message);
+    }
+
+    //company adds comment to comments column
+    public function addComment(Request $request)
+    {
+        Company::where('id', $this->company_id)->update('comments', $request->comment);
+        return $this->showMessage('comment has been inserted');
     }
 }

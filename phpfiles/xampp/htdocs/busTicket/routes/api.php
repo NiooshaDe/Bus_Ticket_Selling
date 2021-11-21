@@ -25,24 +25,24 @@ Route::post('/login',[PassportAuthController::class,'login'])->name('login');
 Route::post('/companyRegister',[PassportAuthController::class,'companyRegister']);
 
 Route::group(['prefix' => 'bus', 'namespace' => 'company', 'middleware' => ['permission:company']], function () {
-    Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
-    Route::put('/update', [\App\Http\Controllers\BusController::class, 'update']);
+    Route::post('/bus', [\App\Http\Controllers\BusController::class, 'store']);
+    Route::put('/bus', [\App\Http\Controllers\BusController::class, 'update']);
     Route::put('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
-    Route::get('/show', [\App\Http\Controllers\BusController::class, 'companyShow']);
+    Route::get('/bus', [\App\Http\Controllers\BusController::class, 'companyShow']);
+    Route::get('/comment', [\App\Http\Controllers\BusController::class, 'addComment']);
 });
+
 
 Route::group(['prefix' => 'ticket', 'namespace' => 'company', 'middleware' => ['permission:company']], function () {
-    Route::post('/store', [\App\Http\Controllers\TicketController::class, 'store']);
-    Route::put('/update', [\App\Http\Controllers\TicketController::class, 'update']);
-    Route::get('/show', [\App\Http\Controllers\TicketController::class, 'show']);
+    Route::post('/ticket', [\App\Http\Controllers\TicketController::class, 'store']);
+    Route::put('/ticket', [\App\Http\Controllers\TicketController::class, 'update']);
+    Route::get('/ticket', [\App\Http\Controllers\TicketController::class, 'show']);
 });
 
-Route::middleware(['auth:api', 'permission:company'])->get('/test', function (Request $request) {
-    $user = auth('api')->user();//Auth::user();
-    dd($user->id);
+//routes related to landing page
+Route::prefix('landingShow')->group(function() {
+    Route::get('/companies', [\App\Http\Controllers\LandingPageController::class, 'showCompanies']);
+    Route::get('/comments', [\App\Http\Controllers\LandingPageController::class, 'showComments']);
+    Route::post('/buses', [\App\Http\Controllers\LandingPageController::class, 'showBuses']);
+    Route::post('/filter', [\App\Http\Controllers\LandingPageController::class, 'filter']);
 });
-
-//Route::post('/store', [\App\Http\Controllers\BusController::class, 'store']);
-//Route::post('/update', [\App\Http\Controllers\BusController::class, 'update']);
-//Route::post('/archive', [\App\Http\Controllers\BusController::class, 'archive']);
-//Route::post('/show', [\App\Http\Controllers\BusController::class, 'companyShow']);

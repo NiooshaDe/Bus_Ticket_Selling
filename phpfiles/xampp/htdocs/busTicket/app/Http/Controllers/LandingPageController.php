@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use App\Http\Traits\ProjectResponse;
+use App\Repositories\ShowCompaniesRepository;
 
 //controls data's which should be shown in landing page
 class LandingPageController extends Controller
@@ -16,11 +17,17 @@ class LandingPageController extends Controller
     use ProjectResponse;
 
     public $date, $request;
+    protected $model;
+
+    public function __construct(Company $company)
+    {
+        $this->model = new ShowCompaniesRepository($company);
+    }
 
     //shows some random companies
     public function showCompanies()
     {
-        $companies = Company::all()->random(3);
+        $companies = $this->model->showCompanies();
 
         return $this->showData($companies);
     }
@@ -39,28 +46,14 @@ class LandingPageController extends Controller
         $this->request = $request;
 
         $buses = Bus::with('tickets')->whereHas('tickets', function ($query) {
-            $query->whereDate('tickets.starting_date_time', $this->date)
+            $query->filter($this->request)->whereDate('tickets.starting_date_time', $this->date)
             ->where('tickets.beginning', $this->request->beginning)
             ->where('tickets.destination', $this->request->destination)
             ->orderBy('tickets.starting_date_time', 'asc');
-        })->where('available', 1)->get();
+        })->where('available', 1)->filter($request)->get();
 
         return $this->showData($buses);
     }
 
-    //filters applying on tickets
-    public function filter(Request $request)
-    {
-        $this->request = $request;
-        $output = Bus::with('tickets')->whereHas('tickets', function ($query) {
-            $query->filter($this->request)->orderBy('starting_date_time', 'asc');
-        })->where('available', 1)->filter($request)->get();
 
-        //to check if there is a bus with such specifications
-        if($output->isEmpty()) {
-            return $this->getErrors('there is no such bus available', Response::HTTP_BAD_REQUEST);
-        }
-
-        return $this->showData($output);
-    }
 }

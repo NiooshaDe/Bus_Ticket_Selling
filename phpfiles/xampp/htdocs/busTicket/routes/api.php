@@ -46,3 +46,5 @@ Route::prefix('landingShow')->group(function() {
     Route::post('/buses', [\App\Http\Controllers\LandingPageController::class, 'showBuses']);
     Route::post('/filter', [\App\Http\Controllers\LandingPageController::class, 'filter']);
 });
+
+Route::post('/show', [\App\Http\Controllers\ReserveController::class, 'show']);

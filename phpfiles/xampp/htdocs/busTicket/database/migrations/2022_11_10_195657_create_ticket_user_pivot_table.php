@@ -16,6 +16,7 @@ class CreateTicketUserPivotTable extends Migration
     {
         Schema::create('ticket_user', function (Blueprint $table) {
             $table->id();
+            $table->integer('seat_number');
             $table->unsignedBigInteger('ticket_id')->index();
             $table->foreign('ticket_id')->references('id')->on('tickets');
             $table->unsignedBigInteger('user_id')->index();

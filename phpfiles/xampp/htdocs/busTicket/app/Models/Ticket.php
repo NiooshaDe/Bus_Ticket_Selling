@@ -25,6 +25,7 @@ class Ticket extends Model
         return $this->belongsTo(Bus::class, 'bus_id', 'id');
     }
 
+    //used for filtering in landingPageController
     public function scopeFilter(Builder $builder, $request)
     {
         return (new TicketFilter($request))->filter($builder);

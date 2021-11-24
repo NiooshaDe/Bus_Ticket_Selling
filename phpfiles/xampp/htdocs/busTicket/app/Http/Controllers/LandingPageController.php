@@ -52,6 +52,10 @@ class LandingPageController extends Controller
             ->orderBy('tickets.starting_date_time', 'asc');
         })->where('available', 1)->filter($request)->get();
 
+        if($buses->isEmpty()) {
+            return $this->getErrors('No such data', Response::HTTP_NOT_FOUND);
+        }
+
         return $this->showData($buses);
     }
 

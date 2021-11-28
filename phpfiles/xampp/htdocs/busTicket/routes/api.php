@@ -48,3 +48,5 @@ Route::prefix('landingShow')->group(function() {
 });
 
 Route::post('/show', [\App\Http\Controllers\ReserveController::class, 'show']);
+Route::post('/reserve', [\App\Http\Controllers\ReserveController::class, 'reserve']);
+Route::get('/receipt', [\App\Http\Controllers\ReserveController::class, 'receipt']);

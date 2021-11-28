@@ -49,5 +49,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany
         (Ticket::class, 'ticket_user', 'user_id', 'ticket_id');
+//            ->withPivotValue('seat_number');
     }
 }

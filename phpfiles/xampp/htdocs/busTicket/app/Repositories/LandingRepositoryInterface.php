@@ -3,5 +3,6 @@ namespace App\Repositories;
 
 Interface LandingRepositoryInterface
 {
-    public function showCompanies();
+    public function show();
+
 }

@@ -9,10 +9,11 @@ class ShowCompaniesRepository implements LandingRepositoryInterface
     {
         $this->model = $model;
     }
-    public function showCompanies()
+    public function show()
     {
         // TODO: Implement showCompanies() method.
         return $this->model->all()->random(3);
 
     }
+
 }

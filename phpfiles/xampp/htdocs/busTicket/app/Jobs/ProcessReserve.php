@@ -33,6 +33,6 @@ class ProcessReserve implements ShouldQueue
      */
     public function handle()
     {
-        return TicketUser::where('id', $this->id)->update(['updated_at' => Carbon::now(), 'expired' => 1]);
+        return TicketUser::where('id', $this->id)->where('expired', 0)->where('reserved', 0)->update(['updated_at' => Carbon::now(), 'expired' => 1]);
     }
 }

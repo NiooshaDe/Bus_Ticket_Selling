@@ -47,6 +47,10 @@ Route::prefix('landingShow')->group(function() {
     Route::post('/filter', [\App\Http\Controllers\LandingPageController::class, 'filter']);
 });
 
+
 Route::post('/show', [\App\Http\Controllers\ReserveController::class, 'show']);
-Route::post('/reserve', [\App\Http\Controllers\ReserveController::class, 'reserve']);
-Route::get('/receipt', [\App\Http\Controllers\ReserveController::class, 'receipt']);
+Route::post('/reserve', [\App\Http\Controllers\ReserveController::class, 'reserve'])->middleware('auth:api');
+Route::get('/receipt', [\App\Http\Controllers\ReserveController::class, 'receipt'])->middleware('auth:api');
+
+//Route::get('/pdf', [\App\Http\Controllers\GateWayController::class, 'createPdf']);
+Route::get('pdf/{number}/{name}/{total_price}/{ticket_user_id}', [\App\Http\Controllers\GateWayController::class, 'createPdf']);

@@ -8,10 +8,13 @@ use Laravel\Passport\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Traits\ProjectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CompanyRequest;
+use App\Repositories\UserRepositories;
+use App\Repositories\CompanyRepository;
 
 
 class PassportAuthController extends Controller
@@ -19,7 +22,7 @@ class PassportAuthController extends Controller
     use ProjectResponse;
     public $registerData;
 
-    public function register(UserRequest $request)
+    public function register(UserRequest $request, UserRepositories $userRepositories)
     {
         $this->registerData = [
             "name" => $request->name,
@@ -32,12 +35,12 @@ class PassportAuthController extends Controller
             'updated_at' => \Carbon\Carbon::now(),
         ];
 
-        $user = User::create($this->registerData); //insert into database
+        $user = $userRepositories->create($this->registerData); //insert into database
         $register_access_token = $user->createToken("$request->name")->accessToken;
         return $this->showToken($register_access_token);
     }
 
-    public function companyRegister(CompanyRequest $request)
+    public function companyRegister(CompanyRequest $request, UserRepositories $userRepositories, CompanyRepository $companyRepository)
     {
         $companyData = [
             "name" => $request->name,
@@ -60,14 +63,14 @@ class PassportAuthController extends Controller
         ];
 
 
-        $company = Company::create($companyData); //insert into companies table
-        $user = User::create($userData);//insert into users table
+        $company = $companyRepository->create($companyData); //insert into companies table
+        $user = $userRepositories->create($userData);//insert into users table
         $register_access_token = $user->createToken("$request->name")->accessToken;
         return $this->showToken($register_access_token);
     }
 
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $request_array = $request->only('name', 'password');
 

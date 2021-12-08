@@ -16,43 +16,26 @@ use App\Repositories\TicketRepositories;
 use App\Http\Requests\ShowTicketsRequest;
 use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\TicketUserRepositories;
+use function PHPUnit\Framework\isEmpty;
 
 class ReserveController extends Controller
 {
     use ProjectResponse;
     public $id;
 
-    //expires certain values
-    public function __construct()
-    {
-        $reserves = new TicketUserRepositories();
-        $reserves = $reserves->expireGet();
-
-        if($reserves->isNotEmpty()) {
-            foreach ($reserves as $reserve) {
-                if (Carbon::now()->subMinutes(15) >= $reserve->created_at) {
-                    $reserveExpire = new TicketUserRepositories();
-                    $reserveExpire->expire($reserve->id);
-                }
-//                $this->dispatch(new ProcessReserve($reserve->id))->delay($reserve->updated)
-            }
-        }
-    }
 
     //shows reserved and unreserved seats
-    public function show(ShowTicketsRequest  $request)
+    public function show(ShowTicketsRequest  $request, UserRepositories $user_repository, TicketUserRepositories $ticket_user_repository)
     {
-        $users = new UserRepositories();
-        $users = $users->show($request->ticket_id);
+        $users = $user_repository->show($request->ticket_id);
 
-        $datas = new TicketUserRepositories();
-        $datas = $datas->show($request->ticket_id);
+        $datas = $ticket_user_repository->show($request->ticket_id);
 
         $output = [];
         foreach ($users as $user) {
             foreach ($datas as $data)  {
                 if ($data->user_id == $user->id) {
-                    $output += ["$user->gender" => $data->seat_number];
+                    $output += ["gender" => $user->gender, "seat_number" => $data->seat_number];
                 }
             }
         }
@@ -62,17 +45,13 @@ class ReserveController extends Controller
 
 
     //user can reserve a seat
-    public function reserve(ReserveRequest $request)
+    public function reserve(ReserveRequest $request, TicketUserRepositories $ticket_user_repository)
     {
-        //checks if user is logged in
-        if(empty(auth('api')->user())) {
-            return $this->getErrors('unauthorized', Response::HTTP_FORBIDDEN);
-        }
+
 
         $items = $request->all();
 
         foreach($items['items'] as $item) {
-            $item_id = $item['item_id'];
             $ticket_id = $item['ticket_id'];
             $seat_number = $item['seat_number'];
 
@@ -86,39 +65,39 @@ class ReserveController extends Controller
                 'updated_at' => Carbon::now(),
             ];
 
-            $reserve = TicketUser::insert($data);
+            $id = $ticket_user_repository->store($data);
+
+            //expire after 15 minutes automatically
+            ProcessReserve::dispatch($id)->delay(900)->onConnection('database');
+
+            if(isEmpty($id)) {
+                return $this->getErrors('something wrong with reserve', Response::HTTP_BAD_REQUEST);
+            }
         }
 
-
-        if($reserve == false) {
-            return $this->getErrors('something wrong with reserve', Response::HTTP_BAD_REQUEST);
-        }
 
         return $this->showMessage('reserved successfully');
     }
 
 
     //current user bought tickets and the total price
-    public function receipt()
+    public function receipt(TicketRepositories $ticket_repository, TicketUserRepositories $ticket_user_repository)
     {
 
         $user = auth('api')->user();
 
-        //checks if user is logged in
-        if(empty($user)) {
-            return $this->getErrors('unauthorized', Response::HTTP_FORBIDDEN);
-        }
 
         $id = $user->id;
 
-        $price = new TicketRepositories();
-        $price = $price->show($id)[0]->price;
+        if (isEmpty($ticket_repository->reserveShow($id))) {
+            return $this->getErrors('There is nothing to show', Response::HTTP_EXPECTATION_FAILED);
+        }
 
-        $total_price = new TicketUserRepositories();
-        $total_price = $total_price->count($id) * $price;
+        $price = $ticket_repository->reserveShow($id)[0]->price;
+        $total_price = $ticket_user_repository->count($id) * $price;
 
         $output = [];
-        $output += ["price" => $price, "total_price" => $total_price];
+        $output += ["price" => $price, "total_price" => $total_price, "user_name", $user->name];
 
         return $this->showData($output);
     }

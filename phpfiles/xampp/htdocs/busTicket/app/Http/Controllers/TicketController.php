@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bus;
 use App\Models\Ticket;
+use App\Repositories\TicketRepositories;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Traits\ProjectResponse;
@@ -30,10 +31,9 @@ class TicketController extends Controller
     }
 
     //show available tickets of specific bus
-    public function show(Request $request)
+    public function show(Request $request, TicketRepositories $ticketRepositories)
     {
-        $tickets = Ticket::where('bus_id', $request->bus_id)->where('available', 1)->get();
-
+        $tickets = $ticketRepositories->showTickets($request->bus_id);
         return $this->showData($tickets);
     }
 

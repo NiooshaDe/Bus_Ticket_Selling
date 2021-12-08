@@ -22,4 +22,9 @@ class UserRepositories implements TicketUserModelsRepositories
                 ->orWhere('expired', 0);
         })->get(['gender', 'id']);
     }
+
+    public function create($companyData)
+    {
+        return $this->model->create($companyData);
+    }
 }

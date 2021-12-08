@@ -21,9 +21,9 @@ class TicketUserRepositories implements TicketUserModelsRepositories
         return $this->model->where('ticket_id', $ticket_id)->get();
     }
 
-    public function store()
+    public function store($data)
     {
-        //
+        return $this->model->insertGetId($data);
     }
 
 
@@ -41,5 +41,10 @@ class TicketUserRepositories implements TicketUserModelsRepositories
     {
         return $this->model->where('user_id', $user_id)->where('reserved', 0)
             ->where('expired', 0)->get()->count();
+    }
+
+    public function updateTransaction($transaction_id)
+    {
+        return $this->model->update(['transaction_id', $transaction_id]);
     }
 }
